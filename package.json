@@ -86,6 +86,7 @@
     "webpack-shell-plugin": "^0.5.0"
   },
   "dependencies": {
-    "eventemitter3": "^4.0.7"
+    "eventemitter3": "^4.0.7",
+    "phaser": "^3.55.2"
   }
 }
