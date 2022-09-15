@@ -2,10 +2,10 @@ const config = {
   type: Phaser.AUTO,
   parent: 'game',
   width: 1920,
-  heigth: 1060,
+  heigth: 1080,
   scale: {
     mode: Phaser.Scale.RESIZE,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   scene: {
     preload,
@@ -24,14 +24,19 @@ const config = {
 const game = new Phaser.Game(config);
 
 var exitLayer;
+var jumpBoost;
 var coinLayer;
 var score = 0;
 var scoreText;
 var bombs;
 var deathCounter = 0;
+var jumpBoostCollected = false;
 
 function preload() {
-  this.load.image('background', 'assets/background.png');
+  this.load.image('background', 'assets/background1.gif');
+  // this.load.image('background', 'assets/background2.png');
+  // this.load.image('background', 'assets/background3.png');
+  // this.load.image('background', 'assets/background4.png');
   this.load.image('hospitalBackground', 'assets/hospitalbg.png');
   this.load.image('tiles', 'assets/tilesets/platformPack_tilesheet.png');
   this.load.image('spike', 'assets/spike.png');
@@ -52,6 +57,7 @@ function preload() {
 
   this.load.audio("planet_popstar", ["assets/sounds/planet_popstar.mp3"]);
   this.load.audio("jump", ["assets/sounds/jump.mp3"]);
+  this.load.audio("superjump", ["assets/sounds/superjump.mp3"]);
   this.load.audio("death", ["assets/sounds/death.mp3"]);
   this.load.audio("game_over1", ["assets/sounds/game_over1.mp3"]);
   this.load.audio("game_over", ["assets/sounds/game_over.mp3"]);
@@ -81,7 +87,7 @@ function create() {
   coinLayer = map.createLayer('Coins', coinTiles, 0, 0);
 
   const backgroundImage = this.add.image(0, 0, 'background').setOrigin(0, 0);
-  backgroundImage.setScale(2, 0.8);
+  backgroundImage.setScale(2.3, 1.71);
 
   const platforms = map.createLayer('Platforms', tileset, 0, 200);
   platforms.setCollisionByExclusion(-1, true);
@@ -98,6 +104,7 @@ function create() {
   this.physics.add.collider(this.player, platforms);
 
   this.jump = this.sound.add("jump");
+  this.superjump = this.sound.add("superjump");
   this.death = this.sound.add("death");
   this.coin = this.sound.add("coin");
   this.planet_popstar = this.sound.add("planet_popstar");
@@ -155,18 +162,22 @@ function create() {
 
   stars = this.physics.add.group({
     key: 'star',
-    repeat: 0,
-    setXY: { x: 300, y: 0, stepX: 70 }
+    repeat: 6,
+    setXY: { x: 700, y: 0, stepX: 70 }
   });
 
   stars.children.iterate(function (child) {
-
     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
   });
 
   exitLayer = map.createLayer('Exit', tileset, 0, 0);
   exitLayer = this.physics.add.sprite(1900, 380, 'exit');
+
+  jumpBoost = map.createLayer('JumpBoost', tileset, 0, 0);
+  jumpBoost = this.physics.add.sprite(1000, 380, 'jumpBoost');
+
+  this.physics.add.collider(jumpBoost, platforms);
+  this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
 
   this.physics.add.collider(exitLayer, platforms);
   this.physics.add.overlap(this.player, exitLayer, nextLevel, null, this);
@@ -233,6 +244,12 @@ function platformHit(platforms) {
   platforms.destroy();
 }
 
+function useJumpBoost(player) {
+  jumpBoostCollected = false;
+  player.setVelocityY(-900);
+  player.play('jump', true);
+}
+
 function playerHit(player) {
   deathCounter++
   scoreText.setText('Deaths: ' + deathCounter);
@@ -240,7 +257,8 @@ function playerHit(player) {
   player.setTint(0xff0000);
   player.setX(50);
   player.setY(300);
-  this.player.play('fall', true);
+  player.play('fall', true);
+  this.death.play();
   player.setAlpha(0);
   let tw = this.tweens.add({
     targets: player,
@@ -281,6 +299,17 @@ function nextLevel() {
   score = 0;
   this.scene.restart();
 }
+
+function collectJumpBoost(player, jumpBoost) {
+  jumpBoostCollected = true;
+  jumpBoost.disableBody(true, true);
+  this.input.keyboard.on('keydown-A', () => {
+    if (jumpBoostCollected) {
+      useJumpBoost(player);
+      this.superjump.play();
+    }
+  });
+};
 
 function collectStar(player, star) {
   this.coin.play();
