@@ -1,8 +1,8 @@
 const config = {
   type: Phaser.AUTO,
   parent: 'game',
-  width: 1900,
-  heigth: 1000,
+  width: 1920,
+  heigth: 1060,
   scale: {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH
@@ -16,6 +16,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 800 },
+      debug: true
     },
   }
 };
@@ -42,9 +43,9 @@ function preload() {
   this.load.image('bomb', 'assets/bomb.png');
 
   this.load.tilemapTiledJSON('map', 'assets/tilemaps/level1.json');
-  this.load.tilemapTiledJSON('map', 'assets/tilemaps/level2.json');
-  this.load.tilemapTiledJSON('map', 'assets/tilemaps/level3.json');
-  this.load.tilemapTiledJSON('map', 'assets/tilemaps/level4.json');
+  this.load.tilemapTiledJSON('map1', 'assets/tilemaps/level2.json');
+  this.load.tilemapTiledJSON('map2', 'assets/tilemaps/level3.json');
+  this.load.tilemapTiledJSON('map3', 'assets/tilemaps/level4.json');
 
   this.load.atlas('player', 'assets/player.png',
     'assets/player.json');
@@ -72,8 +73,9 @@ function create() {
     })
   }
 
-  const map = this.make.tilemap({ key: 'map' });
-  const tileset = map.addTilesetImage('yoann_platformer', 'tiles');
+  const map = this.make.tilemap({ key: 'map3' });
+  // const tileset = map.addTilesetImage('yoann_platformer', 'tiles');
+  const tileset = map.addTilesetImage('level1', 'tiles');
 
   var coinTiles = map.addTilesetImage('coin');
   coinLayer = map.createLayer('Coins', coinTiles, 0, 0);
@@ -83,13 +85,16 @@ function create() {
 
   const platforms = map.createLayer('Platforms', tileset, 0, 200);
   platforms.setCollisionByExclusion(-1, true);
+  platforms.setCollisionByProperty({ collides: true });
+  // this.matter.world.convertTilemapLayer(platforms);
+  // const { width, height } = this.scale
+  // this.matter.add.sprite(width * 0.5, height * 0.5, 'player');
 
-  this.player = this.physics.add.sprite(50, 300, 'player');
+  this.player = this.physics.add.sprite(50, 400, 'player');
   this.player.setBounce(0.0);
   this.player.setCollideWorldBounds(true);
 
-  this.player.body.setSize(this.player.width, this.player.height - 8);
-
+  this.player.body.setSize(this.player.width - 40, this.player.height - 20);
   this.physics.add.collider(this.player, platforms);
 
   this.jump = this.sound.add("jump");
@@ -161,18 +166,18 @@ function create() {
   });
 
   exitLayer = map.createLayer('Exit', tileset, 0, 0);
-  exitLayer = this.physics.add.sprite(800, 430, 'exit');
+  exitLayer = this.physics.add.sprite(1900, 380, 'exit');
 
   this.physics.add.collider(exitLayer, platforms);
   this.physics.add.overlap(this.player, exitLayer, nextLevel, null, this);
 
   this.physics.add.collider(stars, platforms);
   this.physics.add.overlap(this.player, stars, collectStar, null, this);
+
   bombs = this.physics.add.group();
-
-  this.physics.add.collider(bombs, platforms);
-
   this.physics.add.collider(this.player, bombs, playerHit, null, this);
+  this.physics.add.collider(bombs, platforms);
+  // this.physics.add.overlap(platforms, bombs, platformHit, null, this);
 }
 
 function update() {
@@ -224,6 +229,10 @@ function update() {
 }
 
 
+function platformHit(platforms) {
+  platforms.destroy();
+}
+
 function playerHit(player) {
   deathCounter++
   scoreText.setText('Deaths: ' + deathCounter);
@@ -245,12 +254,11 @@ function playerHit(player) {
   }, 1000);
 
   if (deathCounter === 5) {
-    this.add.rectangle(0, 0, 800, 700, 0x000000).setOrigin(0, 0);
-    this.add.text(200, 250, 'Game Over', { fontSize: '32px', fill: '#fff' });
-    this.add.text(200, 300, 'Press r to Restart', { fontSize: '32px', fill: '#fff' });
+    this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(0, 0);
+    this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#fff' });
+    this.add.text(800, 500, 'Press r to Restart', { fontSize: '32px', fill: '#fff' });
     this.music.stop();
     this.game_over1.play();
-    console.log(this.game_over1);
     this.physics.pause();
     this.input.keyboard.on('keydown-R', () => {
       this.scene.restart();
@@ -262,9 +270,16 @@ function playerHit(player) {
 }
 
 function nextLevel() {
-  this.scene.start('level2');
+  const map = this.make.tilemap({ key: 'map' });
+  const tileset = map.addTilesetImage('yoann_platformer', 'tiles');
+  const platforms = map.createLayer('Platforms', tileset, 0, 0);
+  platforms.setCollisionByExclusion(-1, true);
+  platforms.setCollisionByProperty({ collides: true });
+  const backgroundImage = this.add.image(0, 0, 'hospitalBackground').setOrigin(0, 0);
+  backgroundImage.setScale(2, 0.8);
   deathCounter = 0;
   score = 0;
+  this.scene.restart();
 }
 
 function collectStar(player, star) {
