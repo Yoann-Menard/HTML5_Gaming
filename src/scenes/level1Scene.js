@@ -1,8 +1,8 @@
 const config = {
   type: Phaser.AUTO,
   parent: 'game',
-  width: 1920,
-  heigth: 1080,
+  width: 800,
+  heigth: 600,
   scale: {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -16,7 +16,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 800 },
-      debug: true
+      debug: true,
     },
   }
 };
@@ -37,6 +37,9 @@ function preload() {
   // this.load.image('background', 'assets/background2.png');
   // this.load.image('background', 'assets/background3.png');
   // this.load.image('background', 'assets/background4.png');
+  // this.load.image('background', 'assets/background5.png');
+  // this.load.image('background', 'assets/background6.jpg');
+
   this.load.image('hospitalBackground', 'assets/hospitalbg.png');
   this.load.image('tiles', 'assets/tilesets/platformPack_tilesheet.png');
   this.load.image('spike', 'assets/spike.png');
@@ -58,6 +61,7 @@ function preload() {
   this.load.audio("planet_popstar", ["assets/sounds/planet_popstar.mp3"]);
   this.load.audio("jump", ["assets/sounds/jump.mp3"]);
   this.load.audio("superjump", ["assets/sounds/superjump.mp3"]);
+  this.load.audio("superjump1", ["assets/sounds/superjump1.mp3"]);
   this.load.audio("death", ["assets/sounds/death.mp3"]);
   this.load.audio("game_over1", ["assets/sounds/game_over1.mp3"]);
   this.load.audio("game_over", ["assets/sounds/game_over.mp3"]);
@@ -80,36 +84,44 @@ function create() {
   }
 
   const map = this.make.tilemap({ key: 'map3' });
-  // const tileset = map.addTilesetImage('yoann_platformer', 'tiles');
   const tileset = map.addTilesetImage('level1', 'tiles');
 
-  var coinTiles = map.addTilesetImage('coin');
-  coinLayer = map.createLayer('Coins', coinTiles, 0, 0);
-
   const backgroundImage = this.add.image(0, 0, 'background').setOrigin(0, 0);
-  backgroundImage.setScale(2.3, 1.71);
+  backgroundImage.setScale(map.widthInPixels / backgroundImage.width, map.heightInPixels / backgroundImage.height);
 
   const platforms = map.createLayer('Platforms', tileset, 0, 200);
   platforms.setCollisionByExclusion(-1, true);
   platforms.setCollisionByProperty({ collides: true });
-  // this.matter.world.convertTilemapLayer(platforms);
-  // const { width, height } = this.scale
-  // this.matter.add.sprite(width * 0.5, height * 0.5, 'player');
 
   this.player = this.physics.add.sprite(50, 400, 'player');
   this.player.setBounce(0.0);
+  this.physics.world.bounds.width = map.widthInPixels;
+  // this.physics.world.bounds.height = map.heightInPixels;
   this.player.setCollideWorldBounds(true);
 
   this.player.body.setSize(this.player.width - 40, this.player.height - 20);
   this.physics.add.collider(this.player, platforms);
 
-  this.jump = this.sound.add("jump");
+  this.jump = this.sound.add("jump", {
+    volume: 0.2,
+    loop: false
+  });
   this.superjump = this.sound.add("superjump");
+  this.superjump1 = this.sound.add("superjump1");
   this.death = this.sound.add("death");
-  this.coin = this.sound.add("coin");
+  this.coin = this.sound.add("coin", {
+    volume: 0.2,
+    loop: false
+  });
   this.planet_popstar = this.sound.add("planet_popstar");
-  this.game_over = this.sound.add("game_over");
-  this.game_over1 = this.sound.add("game_over1");
+  this.game_over = this.sound.add("game_over", {
+    volume: 0.5,
+    loop: false
+  });
+  this.game_over1 = this.sound.add("game_over1", {
+    volume: 2,
+    loop: false
+  });
 
   scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
   scoreText.setScrollFactor(0);
@@ -141,7 +153,12 @@ function create() {
   this.anims.create({
     key: 'fall',
     frames: [{ key: 'player', frame: 'robo_player_6' }],
-  })
+  });
+
+  this.anims.create({
+    key: 'superjump',
+    frames: [{ key: 'player', frame: 'robo_player_7' }],
+  });
 
   this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -155,7 +172,6 @@ function create() {
     spikeSprite.body.setSize(spike.width, spike.height - 20).setOffset(0, 20);
   });
   this.physics.add.collider(this.player, this.spikes, playerHit, null, this);
-
 
   this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
   this.cameras.main.startFollow(this.player);
@@ -171,10 +187,23 @@ function create() {
   });
 
   exitLayer = map.createLayer('Exit', tileset, 0, 0);
-  exitLayer = this.physics.add.sprite(1900, 380, 'exit');
+  exitLayer = this.physics.add.sprite(3000, 380, 'exit');
 
-  jumpBoost = map.createLayer('JumpBoost', tileset, 0, 0);
-  jumpBoost = this.physics.add.sprite(1000, 380, 'jumpBoost');
+  this.time.addEvent({
+    delay: 25000,
+    callback: () => {
+      jumpBoost = this.physics.add.sprite(600, 780, 'jumpBoost');
+      this.physics.add.collider(jumpBoost, platforms);
+      this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
+    },
+    loop: true
+  });
+  jumpBoost = this.physics.add.group({
+    key: 'jumpBoost',
+    repeat: 0,
+    setXY: { x: -11, y: 0, stepX: 70 }
+  });
+
 
   this.physics.add.collider(jumpBoost, platforms);
   this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
@@ -186,9 +215,22 @@ function create() {
   this.physics.add.overlap(this.player, stars, collectStar, null, this);
 
   bombs = this.physics.add.group();
+  this.time.addEvent({
+    delay: 5000,
+    callback: () => {
+      const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+      const bomb = bombs.create(x, 16, 'bomb');
+      bomb.setBounce(1);
+      bomb.setCollideWorldBounds(true);
+      bomb.setVelocity(Phaser.Math.Between(-200, 500), 20);
+      bomb.allowGravity = true;
+    },
+    callbackScope: this,
+    loop: true
+  });
+
   this.physics.add.collider(this.player, bombs, playerHit, null, this);
   this.physics.add.collider(bombs, platforms);
-  // this.physics.add.overlap(platforms, bombs, platformHit, null, this);
 }
 
 function update() {
@@ -210,9 +252,9 @@ function update() {
   }
 
   if ((this.cursors.space.isDown || this.cursors.up.isDown) && this.player.body.onFloor()) {
+    this.jump.play();
     this.player.setVelocityY(-350);
     this.player.play('jump', true);
-    this.jump.play();
   }
 
   if (this.cursors.shift.isDown) {
@@ -237,28 +279,31 @@ function update() {
   } else if (this.player.body.velocity.x < 0) {
     this.player.setFlipX(true);
   }
-}
 
-
-function platformHit(platforms) {
-  platforms.destroy();
+  if (this.input.keyboard.on('keydown-R', () => {
+    deathCounter = 0;
+    score = 0;
+    this.player.x = 50;
+    this.player.y = 400;
+  }));
 }
 
 function useJumpBoost(player) {
+  player.play('superjump', true);
   jumpBoostCollected = false;
   player.setVelocityY(-900);
-  player.play('jump', true);
 }
 
+
 function playerHit(player) {
+  this.death.play();
+  player.play('fall', true);
   deathCounter++
   scoreText.setText('Deaths: ' + deathCounter);
   player.setVelocity(0, 0);
   player.setTint(0xff0000);
   player.setX(50);
   player.setY(300);
-  player.play('fall', true);
-  this.death.play();
   player.setAlpha(0);
   let tw = this.tweens.add({
     targets: player,
@@ -277,9 +322,11 @@ function playerHit(player) {
     this.add.text(800, 500, 'Press r to Restart', { fontSize: '32px', fill: '#fff' });
     this.music.stop();
     this.game_over1.play();
+    this.time.removeAllEvents();
     this.physics.pause();
     this.input.keyboard.on('keydown-R', () => {
       this.scene.restart();
+      this.game_over1.stop();
       deathCounter = 0;
       score = 0;
     }
@@ -288,13 +335,13 @@ function playerHit(player) {
 }
 
 function nextLevel() {
-  const map = this.make.tilemap({ key: 'map' });
+  this.scene.remove();
+  const map = this.make.tilemap({ key: 'map2' });
   const tileset = map.addTilesetImage('yoann_platformer', 'tiles');
   const platforms = map.createLayer('Platforms', tileset, 0, 0);
   platforms.setCollisionByExclusion(-1, true);
   platforms.setCollisionByProperty({ collides: true });
   const backgroundImage = this.add.image(0, 0, 'hospitalBackground').setOrigin(0, 0);
-  backgroundImage.setScale(2, 0.8);
   deathCounter = 0;
   score = 0;
   this.scene.restart();
@@ -306,34 +353,38 @@ function collectJumpBoost(player, jumpBoost) {
   this.input.keyboard.on('keydown-A', () => {
     if (jumpBoostCollected) {
       useJumpBoost(player);
+      if (this.player.body.onFloor()) {
+        this.superjump1.play();
+        this.superjump.mute = true;
+      }
       this.superjump.play();
     }
-  });
-};
+  })
+}
 
 function collectStar(player, star) {
   this.coin.play();
   score += 5;
   scoreText.setText('Score: ' + score);
   star.disableBody(true, true);
-  if (stars.countActive(true) === 0) {
-    stars.children.iterate(function (child) {
-      child.enableBody(true, child.x, 10, true, true);
-    });
+  // if (stars.countActive(true) === 0) {
+  //   stars.children.iterate(function (child) {
+  //     child.enableBody(true, child.x, 10, true, true);
+  //   });
 
-    if (score.toString().includes('0')) {
-      if (deathCounter > 0) {
-        deathCounter = deathCounter - 1;
-      }
-
-      scoreText.setText('Life Added! Deaths: ' + deathCounter,);
-
-      var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-      var bomb = bombs.create(x, 50, 'bomb');
-      bomb.setBounce(1);
-      bomb.setCollideWorldBounds(true);
-      bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+  if (score.toString().includes('0')) {
+    if (deathCounter > 0) {
+      deathCounter = deathCounter - 1;
     }
+
+    scoreText.setText('Life Added! Deaths: ' + deathCounter,);
+
+    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+    var bomb = bombs.create(x, 50, 'bomb');
+    bomb.setBounce(1);
+    bomb.setCollideWorldBounds(true);
+    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
   }
 }
+    // }
