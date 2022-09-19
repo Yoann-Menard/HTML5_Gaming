@@ -87,7 +87,6 @@ function create() {
       this.music.play()
     })
   }
-
   const map = this.make.tilemap({ key: 'map3' });
   const tileset = map.addTilesetImage('level1', 'tiles');
 
@@ -246,6 +245,15 @@ function create() {
 }
 
 function update() {
+  if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R).isDown) {
+    this.sound.stopAll();
+    this.scene.restart();
+  }
+
+  if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F).isDown && !this.scale.isFullscreen) {
+    this.scale.startFullscreen();
+  }
+
   if (this.cursors.left.isDown) {
     this.player.setVelocityX(-200);
     if (this.player.body.onFloor()) {
@@ -326,11 +334,13 @@ function playerHit(player) {
     this.add.text(800, 500, 'Press r to Restart', { fontSize: '32px', fill: '#fff' });
     this.music.stop();
     this.game_over.play();
+    this.jump.mute = true;
     this.time.removeAllEvents();
     this.physics.pause();
     this.input.keyboard.on('keydown-R', () => {
       this.scene.restart();
       this.game_over.stop();
+      this.jump.mute = false;
       deathCounter = 0;
       score = 0;
     }
@@ -372,10 +382,6 @@ function nextLevel() {
   this.scene.restart();
 }
 
-function restart() {
-  this.music.stop();
-  this.scene.restart();
-}
 
 function collectJumpBoost(player, jumpBoost) {
   jumpBoostCollected = true;
