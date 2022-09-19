@@ -63,9 +63,13 @@ function preload() {
   this.load.audio("superjump", ["assets/sounds/superjump.mp3"]);
   this.load.audio("superjump1", ["assets/sounds/superjump1.mp3"]);
   this.load.audio("death", ["assets/sounds/death.mp3"]);
-  this.load.audio("game_over1", ["assets/sounds/game_over1.mp3"]);
   this.load.audio("game_over", ["assets/sounds/game_over.mp3"]);
   this.load.audio("coin", ["assets/sounds/coin.mp3"]);
+  this.load.audio("yadun", ["assets/sounds/yadun.mp3"]);
+  this.load.audio("thinkyoucantakeme", ["assets/sounds/thinkyoucantakeme.mp3"]);
+  this.load.audio("behave", ["assets/sounds/behave.mp3"]);
+  this.load.audio("spawn", ["assets/sounds/spawn.mp3"]);
+  this.load.audio("boing", ["assets/sounds/boing.mp3"]);
 }
 
 function create() {
@@ -110,15 +114,11 @@ function create() {
   this.superjump1 = this.sound.add("superjump1");
   this.death = this.sound.add("death");
   this.coin = this.sound.add("coin", {
-    volume: 0.2,
+    volume: 1,
     loop: false
   });
   this.planet_popstar = this.sound.add("planet_popstar");
   this.game_over = this.sound.add("game_over", {
-    volume: 0.5,
-    loop: false
-  });
-  this.game_over1 = this.sound.add("game_over1", {
     volume: 2,
     loop: false
   });
@@ -220,6 +220,10 @@ function create() {
     callback: () => {
       const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
       const bomb = bombs.create(x, 16, 'bomb');
+      this.sound.play('spawn', {
+        volume: 1,
+        loop: false
+      });
       bomb.setBounce(1);
       bomb.setCollideWorldBounds(true);
       bomb.setVelocity(Phaser.Math.Between(-200, 500), 20);
@@ -230,7 +234,13 @@ function create() {
   });
 
   this.physics.add.collider(this.player, bombs, playerHit, null, this);
-  this.physics.add.collider(bombs, platforms);
+  this.physics.add.collider(bombs, platforms, () => {
+    this.sound.play('boing', {
+      volume: 1,
+      loop: false
+    });
+  }
+  );
 }
 
 function update() {
@@ -294,7 +304,6 @@ function useJumpBoost(player) {
   player.setVelocityY(-900);
 }
 
-
 function playerHit(player) {
   this.death.play();
   player.play('fall', true);
@@ -321,12 +330,12 @@ function playerHit(player) {
     this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#fff' });
     this.add.text(800, 500, 'Press r to Restart', { fontSize: '32px', fill: '#fff' });
     this.music.stop();
-    this.game_over1.play();
+    this.game_over.play();
     this.time.removeAllEvents();
     this.physics.pause();
     this.input.keyboard.on('keydown-R', () => {
       this.scene.restart();
-      this.game_over1.stop();
+      this.game_over.stop();
       deathCounter = 0;
       score = 0;
     }
@@ -363,7 +372,10 @@ function collectJumpBoost(player, jumpBoost) {
 }
 
 function collectStar(player, star) {
-  this.coin.play();
+  this.sound.play('coin', {
+    volume: 0.1,
+    loop: false
+  });
   score += 5;
   scoreText.setText('Score: ' + score);
   star.disableBody(true, true);
@@ -382,9 +394,13 @@ function collectStar(player, star) {
     var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
     var bomb = bombs.create(x, 50, 'bomb');
+    this.sound.play('spawn',
+      {
+        volume: 2,
+        loop: false,
+      });
     bomb.setBounce(1);
     bomb.setCollideWorldBounds(true);
     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
   }
 }
-    // }
