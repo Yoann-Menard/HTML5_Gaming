@@ -75,7 +75,7 @@ function preload() {
 
 function create() {
   this.music = this.sound.add('planet_popstar', {
-    volume: 0.2,
+    volume: 0.5,
     loop: true
   })
 
@@ -115,7 +115,7 @@ function create() {
   this.superjump1 = this.sound.add("superjump1");
   this.death = this.sound.add("death");
   this.coin = this.sound.add("coin", {
-    volume: 1,
+    volume: 0.5,
     loop: false
   });
   this.planet_popstar = this.sound.add("planet_popstar");
@@ -222,7 +222,7 @@ function create() {
       const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
       const bomb = bombs.create(x, 16, 'bomb');
       this.sound.play('spawn', {
-        volume: 1,
+        volume: 2,
         loop: false
       });
       bomb.setBounce(1);
@@ -344,6 +344,16 @@ function bombHit(bombs) {
     volume: 1,
     loop: false
   });
+  const particles = this.add.particles('bomb');
+  const emitter = particles.createEmitter({
+    speed: 100,
+    scale: { start: 1, end: 0 },
+    blendMode: 'ADD'
+  });
+  emitter.startFollow(bombs);
+  setTimeout(() => {
+    particles.destroy();
+  }, 1500);
 }
 
 function nextLevel() {
@@ -379,13 +389,24 @@ function collectJumpBoost(player, jumpBoost) {
       else {
         this.superjump.play();
       }
+      const particles = this.add.particles('jumpBoost');
+      const emitter = particles.createEmitter({
+        speed: 100,
+        scale: { start: 1, end: 0 },
+        blendMode: 'ADD'
+      });
+      emitter.startFollow(player);
+      setTimeout(() => {
+        particles.destroy();
+      }
+        , 1500);
     }
   })
 }
 
 function collectStar(player, star) {
   this.sound.play('coin', {
-    volume: 0.1,
+    volume: 0.5,
     loop: false
   });
   score += 5;
