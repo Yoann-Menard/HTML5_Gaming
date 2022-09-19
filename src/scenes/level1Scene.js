@@ -70,6 +70,7 @@ function preload() {
   this.load.audio("behave", ["assets/sounds/behave.mp3"]);
   this.load.audio("spawn", ["assets/sounds/spawn.mp3"]);
   this.load.audio("boing", ["assets/sounds/boing.mp3"]);
+  this.load.audio("pop", ["assets/sounds/pop.mp3"]);
 }
 
 function create() {
@@ -216,7 +217,7 @@ function create() {
 
   bombs = this.physics.add.group();
   this.time.addEvent({
-    delay: 5000,
+    delay: 3000,
     callback: () => {
       const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
       const bomb = bombs.create(x, 16, 'bomb');
@@ -226,7 +227,7 @@ function create() {
       });
       bomb.setBounce(1);
       bomb.setCollideWorldBounds(true);
-      bomb.setVelocity(Phaser.Math.Between(-200, 500), 20);
+      bomb.setVelocity(Phaser.Math.Between(0, 500), 20);
       bomb.allowGravity = true;
     },
     callbackScope: this,
@@ -234,9 +235,10 @@ function create() {
   });
 
   this.physics.add.collider(this.player, bombs, playerHit, null, this);
+  this.physics.add.collider(bombs, this.spikes, bombHit, null, this);
   this.physics.add.collider(bombs, platforms, () => {
     this.sound.play('boing', {
-      volume: 1,
+      volume: 2,
       loop: false
     });
   }
@@ -289,13 +291,6 @@ function update() {
   } else if (this.player.body.velocity.x < 0) {
     this.player.setFlipX(true);
   }
-
-  if (this.input.keyboard.on('keydown-R', () => {
-    deathCounter = 0;
-    score = 0;
-    this.player.x = 50;
-    this.player.y = 400;
-  }));
 }
 
 function useJumpBoost(player) {
@@ -343,30 +338,47 @@ function playerHit(player) {
   }
 }
 
+function bombHit(bombs) {
+  bombs.destroy();
+  this.sound.play('pop', {
+    volume: 1,
+    loop: false
+  });
+}
+
 function nextLevel() {
-  this.scene.remove();
-  const map = this.make.tilemap({ key: 'map2' });
-  const tileset = map.addTilesetImage('yoann_platformer', 'tiles');
-  const platforms = map.createLayer('Platforms', tileset, 0, 0);
-  platforms.setCollisionByExclusion(-1, true);
-  platforms.setCollisionByProperty({ collides: true });
-  const backgroundImage = this.add.image(0, 0, 'hospitalBackground').setOrigin(0, 0);
+  // const map = this.make.tilemap({ key: 'map2' });
+  // const tileset = map.addTilesetImage('yoann_platformer', 'tiles');
+  // const platforms = map.createLayer('Platforms', tileset, 0, 0);
+  // platforms.setCollisionByExclusion(-1, true);
+  // platforms.setCollisionByProperty({ collides: true });
+  // const backgroundImage = this.add.image(0, 0, 'hospitalBackground').setOrigin(0, 0);
   deathCounter = 0;
   score = 0;
+  // this.time.removeAllEvents();
+  // this.scene.remove();
+  // this.physics.pause();
+  this.music.stop();
+  this.scene.restart();
+}
+
+function restart() {
+  this.music.stop();
   this.scene.restart();
 }
 
 function collectJumpBoost(player, jumpBoost) {
   jumpBoostCollected = true;
-  jumpBoost.disableBody(true, true);
+  jumpBoost.destroy()
   this.input.keyboard.on('keydown-A', () => {
     if (jumpBoostCollected) {
       useJumpBoost(player);
-      if (this.player.body.onFloor()) {
+      if (player.body.onFloor()) {
         this.superjump1.play();
-        this.superjump.mute = true;
       }
-      this.superjump.play();
+      else {
+        this.superjump.play();
+      }
     }
   })
 }
@@ -378,12 +390,7 @@ function collectStar(player, star) {
   });
   score += 5;
   scoreText.setText('Score: ' + score);
-  star.disableBody(true, true);
-  // if (stars.countActive(true) === 0) {
-  //   stars.children.iterate(function (child) {
-  //     child.enableBody(true, child.x, 10, true, true);
-  //   });
-
+  star.destroy();
   if (score.toString().includes('0')) {
     if (deathCounter > 0) {
       deathCounter = deathCounter - 1;
