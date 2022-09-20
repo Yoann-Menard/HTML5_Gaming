@@ -181,11 +181,12 @@ function create() {
   stars = this.physics.add.group({
     key: 'coin',
     repeat: 6,
-    setXY: { x: 700, y: 0, stepX: 70 }
+    setXY: { x: 620, y: 500, stepX: 90 }
   });
 
   stars.children.iterate(function (child) {
     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    child.body.allowGravity = false;
   });
 
   exitLayer = this.physics.add.sprite(3000, 380, 'exit');
@@ -228,7 +229,7 @@ function create() {
       const bomb = bombs.create(x, 16, 'bomb');
       this.sound.play('spawn', {
         volume: 3.5,
-        loop: false
+        loop: false,
       });
       bomb.setBounce(1);
       bomb.setCollideWorldBounds(true);
@@ -263,11 +264,8 @@ function update() {
   }
 
   if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown && this.player.body.onFloor()) {
-    // make the player face the player and while jumping
-
-
+    // make the player spin  while airborne reset the spin when the player lands
   }
-
   bombs.children.iterate((bomb) => {
     if (bomb.body.velocity.x > 0) {
       bomb.setFlipX(true);
@@ -277,7 +275,7 @@ function update() {
   });
 
   if (!this.scale.isFullscreen) {
-    this.add.text(128, 328, 'PRESS F TO PLAY THE GAME FULLSCREEN (REQUIRED FOR PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
+    this.add.text(10, 300, 'PRESS F TO PLAY THE GAME IN FULLSCREEN MODE (REQUIRED FOR THE GAME PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
   }
 
   if (this.cursors.left.isDown) {
@@ -396,7 +394,7 @@ function bombHit(bombs) {
   emitter.startFollow(bombs);
   setTimeout(() => {
     particles.destroy();
-  }, 0800);
+  }, 0650);
 }
 
 function nextLevel() {
