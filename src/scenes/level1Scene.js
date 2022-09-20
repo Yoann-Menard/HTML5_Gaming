@@ -71,6 +71,7 @@ function preload() {
   this.load.audio("spawn", ["assets/sounds/spawn.mp3"]);
   this.load.audio("boing", ["assets/sounds/boing.mp3"]);
   this.load.audio("pop", ["assets/sounds/pop.mp3"]);
+  this.load.audio("jump_spawn", ["assets/sounds/jump_spawn.mp3"]);
 }
 
 function create() {
@@ -192,6 +193,11 @@ function create() {
   this.time.addEvent({
     delay: 25000,
     callback: () => {
+      this.sound.play("jump_spawn",
+        {
+          volume: 3,
+          loop: false
+        });
       jumpBoost = this.physics.add.sprite(600, 780, 'jumpBoost');
       this.physics.add.collider(jumpBoost, platforms);
       this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
@@ -216,12 +222,12 @@ function create() {
 
   bombs = this.physics.add.group();
   this.time.addEvent({
-    delay: 3000,
+    delay: 2000,
     callback: () => {
       const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
       const bomb = bombs.create(x, 16, 'bomb');
       this.sound.play('spawn', {
-        volume: 2,
+        volume: 3.5,
         loop: false
       });
       bomb.setBounce(1);
@@ -252,6 +258,12 @@ function update() {
 
   if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F).isDown && !this.scale.isFullscreen) {
     this.scale.startFullscreen();
+    this.sound.stopAll();
+    this.scene.restart();
+  }
+
+  if (!this.scale.isFullscreen) {
+    this.add.text(128, 328, 'PRESS F TO PLAY THE GAME FULLSCREEN (REQUIRED FOR PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
   }
 
   if (this.cursors.left.isDown) {
@@ -300,6 +312,7 @@ function update() {
     this.player.setFlipX(true);
   }
 }
+
 
 function useJumpBoost(player) {
   player.play('superjump', true);
@@ -351,7 +364,7 @@ function playerHit(player) {
 function bombHit(bombs) {
   bombs.destroy();
   this.sound.play('pop', {
-    volume: 1,
+    volume: 2,
     loop: false
   });
   const particles = this.add.particles('bomb');
@@ -430,7 +443,7 @@ function collectStar(player, star) {
     var bomb = bombs.create(x, 50, 'bomb');
     this.sound.play('spawn',
       {
-        volume: 2,
+        volume: 3.5,
         loop: false,
       });
     bomb.setBounce(1);
