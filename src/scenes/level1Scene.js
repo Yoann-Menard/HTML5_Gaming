@@ -16,7 +16,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 800 },
-      debug: true,
+      // debug: true,
     },
   }
 };
@@ -261,6 +261,14 @@ function update() {
     this.sound.stopAll();
     this.scene.restart();
   }
+
+  bombs.children.iterate((bomb) => {
+    if (bomb.body.velocity.x > 0) {
+      bomb.setFlipX(true);
+    } else {
+      bomb.setFlipX(false);
+    }
+  });
 
   if (!this.scale.isFullscreen) {
     this.add.text(128, 328, 'PRESS F TO PLAY THE GAME FULLSCREEN (REQUIRED FOR PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
