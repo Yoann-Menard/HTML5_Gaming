@@ -16,7 +16,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 800 },
-      // debug: true,
+      debug: true,
     },
   }
 };
@@ -47,7 +47,7 @@ function preload() {
 
   this.load.image('exit', 'assets/exit.png');
   this.load.image('jumpBoost', 'assets/jumpBoost.png');
-  this.load.image('star', 'assets/coinGold.png');
+  this.load.image('star', 'assets/star.png');
   this.load.image('bomb', 'assets/bomb.png');
 
   this.load.tilemapTiledJSON('map', 'assets/tilemaps/level1.json');
@@ -72,6 +72,7 @@ function preload() {
   this.load.audio("boing", ["assets/sounds/boing.mp3"]);
   this.load.audio("pop", ["assets/sounds/pop.mp3"]);
   this.load.audio("jump_spawn", ["assets/sounds/jump_spawn.mp3"]);
+  this.load.audio("powerup", ["assets/sounds/powerup.mp3"]);
 }
 
 function create() {
@@ -178,7 +179,7 @@ function create() {
   this.cameras.main.startFollow(this.player);
 
   stars = this.physics.add.group({
-    key: 'star',
+    key: 'coin',
     repeat: 6,
     setXY: { x: 700, y: 0, stepX: 70 }
   });
@@ -187,7 +188,6 @@ function create() {
     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
   });
 
-  exitLayer = map.createLayer('Exit', tileset, 0, 0);
   exitLayer = this.physics.add.sprite(3000, 380, 'exit');
 
   this.time.addEvent({
@@ -260,6 +260,12 @@ function update() {
     this.scale.startFullscreen();
     this.sound.stopAll();
     this.scene.restart();
+  }
+
+  if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown && this.player.body.onFloor()) {
+    // make the player face the player and while jumping
+
+
   }
 
   bombs.children.iterate((bomb) => {
@@ -412,6 +418,26 @@ function nextLevel() {
 function collectJumpBoost(player, jumpBoost) {
   scoreText.setText('Jump Boost Collected Press A to use it!');
   jumpBoostCollected = true;
+
+  this.music.pause();
+  setTimeout(() => {
+    this.music.resume();
+  }, 3300);
+  this.sound.play('powerup', {
+    volume: 2.5,
+    loop: false
+  });
+
+  const particles = this.add.particles('star');
+  const emitter = particles.createEmitter({
+    speed: 1200,
+    scale: { start: 1.7, end: 0 },
+    blendMode: 'ADD'
+  });
+  emitter.startFollow(player);
+  setTimeout(() => {
+    particles.destroy();
+  }, 1500);
   player.setTint(0x00ff00);
   jumpBoost.destroy()
   this.input.keyboard.on('keydown-A', () => {
