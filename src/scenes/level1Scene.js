@@ -389,14 +389,14 @@ function bombHit(bombs) {
   });
   const particles = this.add.particles('bomb');
   const emitter = particles.createEmitter({
-    speed: 100,
+    speed: 200,
     scale: { start: 1, end: 0 },
     blendMode: 'ADD'
   });
   emitter.startFollow(bombs);
   setTimeout(() => {
     particles.destroy();
-  }, 1500);
+  }, 0800);
 }
 
 function nextLevel() {
@@ -437,7 +437,7 @@ function collectJumpBoost(player, jumpBoost) {
   emitter.startFollow(player);
   setTimeout(() => {
     particles.destroy();
-  }, 1500);
+  }, 1900);
   player.setTint(0x00ff00);
   jumpBoost.destroy()
   this.input.keyboard.on('keydown-A', () => {
