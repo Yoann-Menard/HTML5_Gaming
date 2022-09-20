@@ -317,7 +317,9 @@ function update() {
 function useJumpBoost(player) {
   player.play('superjump', true);
   jumpBoostCollected = false;
+  player.clearTint();
   player.setVelocityY(-900);
+  scoreText.setText('Score: ' + score);
 }
 
 function playerHit(player) {
@@ -337,6 +339,10 @@ function playerHit(player) {
     ease: 'Linear',
     repeat: 5,
   });
+  if (jumpBoostCollected) {
+    jumpBoostCollected = false;
+    player.clearTint();
+  }
   setTimeout(() => {
     this.player.clearTint();
   }, 1000);
@@ -395,9 +401,10 @@ function nextLevel() {
   this.scene.restart();
 }
 
-
 function collectJumpBoost(player, jumpBoost) {
+  scoreText.setText('Jump Boost Collected Press A to use it!');
   jumpBoostCollected = true;
+  player.setTint(0x00ff00);
   jumpBoost.destroy()
   this.input.keyboard.on('keydown-A', () => {
     if (jumpBoostCollected) {
