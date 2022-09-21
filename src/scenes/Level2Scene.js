@@ -1,15 +1,15 @@
-class Level1Scene extends Phaser.Scene {
+class Level2Scene extends Phaser.Scene {
   constructor() {
-    super('Level1Scene');
+    super('Level2Scene');
   }
 
   preload() {
-    this.load.image('background', 'assets/background1.gif');
     // this.load.image('background', 'assets/background2.png');
-    // this.load.image('background', 'assets/background3.png');
-    // this.load.image('background', 'assets/background4.png');
-    // this.load.image('background', 'assets/background5.png');
-    // this.load.image('background', 'assets/background6.jpg');
+    // this.load.image('background', 'assets/background1.gif');
+    //     // this.load.image('background', 'assets/background3.png');
+    //     // this.load.image('background', 'assets/background4.png');
+    //     // this.load.image('background', 'assets/background5.png');
+    //     // this.load.image('background', 'assets/background6.jpg');
 
     this.load.image('hospitalBackground', 'assets/hospitalbg.png');
     this.load.image('tiles', 'assets/tilesets/platformPack_tilesheet.png');
@@ -21,12 +21,12 @@ class Level1Scene extends Phaser.Scene {
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
 
-    this.load.tilemapTiledJSON('level1', 'assets/tilemaps/level1.json');
+    this.load.tilemapTiledJSON('level2', 'assets/tilemaps/level2.json');
 
     this.load.atlas('player', 'assets/player.png',
       'assets/player.json');
 
-    this.load.audio("planet_popstar", ["assets/sounds/planet_popstar.mp3"]);
+    this.load.audio("world-2", ["assets/sounds/world-2.mp3"]);
     this.load.audio("jump", ["assets/sounds/jump.mp3"]);
     this.load.audio("superjump", ["assets/sounds/superjump.mp3"]);
     this.load.audio("superjump1", ["assets/sounds/superjump1.mp3"]);
@@ -46,8 +46,8 @@ class Level1Scene extends Phaser.Scene {
 
 
   create() {
-    this.music = this.sound.add('planet_popstar', {
-      volume: 0.5,
+    this.music = this.sound.add('world-2', {
+      volume: 1.5,
       loop: true
     })
 
@@ -59,10 +59,10 @@ class Level1Scene extends Phaser.Scene {
         this.music.play()
       })
     }
-    const map = this.make.tilemap({ key: 'level1' });
-    const tileset = map.addTilesetImage('level1', 'tiles');
+    const map = this.make.tilemap({ key: 'level2' });
+    const tileset = map.addTilesetImage('level2', 'tiles');
 
-    const backgroundImage = this.add.image(0, 0, 'background').setOrigin(0, 0);
+    const backgroundImage = this.add.image(0, 0, 'hospitalBackground').setOrigin(0, 0);
     backgroundImage.setScale(map.widthInPixels / backgroundImage.width, map.heightInPixels / backgroundImage.height);
 
     const platforms = map.createLayer('Platforms', tileset, 0, 200);
@@ -158,7 +158,7 @@ class Level1Scene extends Phaser.Scene {
       child.body.allowGravity = false;
     });
 
-    exitLayer = this.physics.add.sprite(3000, 380, 'exit');
+    exitLayer = this.physics.add.sprite(1800, 180, 'exit');
 
     this.time.addEvent({
       delay: 25000,
@@ -168,7 +168,7 @@ class Level1Scene extends Phaser.Scene {
             volume: 3,
             loop: false
           });
-        jumpBoost = this.physics.add.sprite(600, 780, 'jumpBoost');
+        jumpBoost = this.physics.add.sprite(1800, 280, 'jumpBoost');
         this.physics.add.collider(jumpBoost, platforms);
         this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
       },
@@ -185,7 +185,7 @@ class Level1Scene extends Phaser.Scene {
     this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
 
     this.physics.add.collider(exitLayer, platforms);
-    this.physics.add.overlap(this.player, exitLayer, startLevel2, null, this);
+    this.physics.add.overlap(this.player, exitLayer, startLevel3, null, this);
 
     this.physics.add.collider(stars, platforms);
     this.physics.add.overlap(this.player, stars, collectStar, null, this);
@@ -197,7 +197,7 @@ class Level1Scene extends Phaser.Scene {
         const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         const bomb = bombs.create(x, 16, 'bomb');
         this.sound.play('spawn', {
-          volume: 3.5,
+          volume: 0.5,
           loop: false,
         });
         bomb.setBounce(1);
@@ -234,11 +234,6 @@ class Level1Scene extends Phaser.Scene {
       this.scene.restart();
     }
 
-    if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.U).isDown) {
-      this.sound.stopAll();
-      this.scene.start("Level2Scene");
-    }
-
     bombs.children.iterate((bomb) => {
       if (bomb.body.velocity.x > 0) {
         bomb.setFlipX(true);
@@ -247,9 +242,9 @@ class Level1Scene extends Phaser.Scene {
       }
     });
 
-    if (!this.scale.isFullscreen) {
-      this.add.text(10, 300, 'PRESS F TO PLAY THE GAME IN FULLSCREEN MODE (REQUIRED FOR THE GAME PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
-    }
+    // if (!this.scale.isFullscreen) {
+    //   this.add.text(10, 300, 'PRESS F TO PLAY THE GAME IN FULLSCREEN MODE (REQUIRED FOR THE GAME PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
+    // }
 
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-200);
@@ -344,8 +339,8 @@ function playerHit(player) {
 
   if (deathCounter >= 5) {
     this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(0, 0);
-    this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#fff' });
-    this.add.text(800, 500, 'Press R to Restart', { fontSize: '32px', fill: '#fff' });
+    this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#00fff' });
+    this.add.text(800, 500, 'Press R to Restart', { fontSize: '32px', fill: '#00fff' });
     this.music.stop();
     this.game_over.play();
     this.jump.mute = true;
@@ -380,9 +375,9 @@ function bombHit(bombs) {
   }, 0650);
 }
 
-function startLevel2() {
+function startLevel3() {
   this.sound.stopAll();
-  this.scene.start('Level2Scene');
+  this.scene.start('Level3Scene');
 }
 
 function collectJumpBoost(player, jumpBoost) {
@@ -454,7 +449,7 @@ function collectStar(player, star) {
     var bomb = bombs.create(x, 50, 'bomb');
     this.sound.play('spawn',
       {
-        volume: 3.5,
+        volume: 0.5,
         loop: false,
       });
     bomb.setBounce(1);

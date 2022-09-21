@@ -7,7 +7,7 @@ const config = {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [Level1Scene],
+  scene: [Level1Scene, Level2Scene],
   physics: {
     default: 'arcade',
     arcade: {
