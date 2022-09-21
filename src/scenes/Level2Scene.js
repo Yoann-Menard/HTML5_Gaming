@@ -140,13 +140,31 @@ class Level2Scene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.cameras.main.startFollow(this.player);
 
+    stars1 = this.physics.add.group({
+      key: 'coin',
+      repeat: 1,
+      setXY: { x: 420, y: 450, stepX: 70 }
+    });
+
+    stars1.children.iterate(function (child) {
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+      child.body.allowGravity = false;
+    });
+
     stars = this.physics.add.group({
       key: 'coin',
-      repeat: 0,
-      setXY: { x: 620, y: 500, stepX: 0 }
+      repeat: 1,
+      setXY: { x: 990, y: 450, stepX: 60 }
     });
 
     stars.children.iterate(function (child) {
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+      child.body.allowGravity = false;
+    });
+
+    stars2 = this.physics.add.group({ key: 'coin', repeat: 1, setXY: { x: 1450, y: 450, stepX: 60 } });
+
+    stars2.children.iterate(function (child) {
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
       child.body.allowGravity = false;
     });
@@ -180,8 +198,14 @@ class Level2Scene extends Phaser.Scene {
     this.physics.add.collider(exitLayer, platforms);
     this.physics.add.overlap(this.player, exitLayer, startLevel3, null, this);
 
+    this.physics.add.collider(stars1, platforms);
+    this.physics.add.overlap(this.player, stars1, collectStar, null, this);
+
     this.physics.add.collider(stars, platforms);
     this.physics.add.overlap(this.player, stars, collectStar, null, this);
+
+    this.physics.add.collider(stars2, platforms);
+    this.physics.add.overlap(this.player, stars2, collectStar, null, this);
 
     bombs = this.physics.add.group();
     this.time.addEvent({
@@ -296,6 +320,8 @@ var score = 0;
 var scoreText;
 var bombs;
 var stars;
+var stars1;
+var stars2;
 var deathCounter = 0;
 var jumpBoostCollected = false;
 
