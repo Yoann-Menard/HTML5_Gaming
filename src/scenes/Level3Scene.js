@@ -5,7 +5,7 @@ class Level3Scene extends Phaser.Scene {
 
   preload() {
     // this.load.image('background', 'assets/background1.gif');
-    this.load.image('background', 'assets/background2.png');
+    this.load.image('background6', 'assets/background6.jpg');
     // this.load.image('background', 'assets/background3.png');
     // this.load.image('background', 'assets/background4.png');
     // this.load.image('background', 'assets/background5.png');
@@ -61,8 +61,8 @@ class Level3Scene extends Phaser.Scene {
     const map = this.make.tilemap({ key: 'level3' });
     const tileset = map.addTilesetImage('level3', 'tiles');
 
-    const backgroundImage = this.add.image(0, 0, 'background').setOrigin(0, 0);
-    backgroundImage.setScale(map.widthInPixels / backgroundImage.width, map.heightInPixels / backgroundImage.height);
+    // const backgroundImage = this.add.image(0, 0, 'background6').setOrigin(0, 0);
+    // backgroundImage.setScale(map.widthInPixels / backgroundImage.width, map.heightInPixels / backgroundImage.height);
 
     const platforms = map.createLayer('Platforms', tileset, 0, 200);
     platforms.setCollisionByExclusion(-1, true);
@@ -71,8 +71,7 @@ class Level3Scene extends Phaser.Scene {
     this.player = this.physics.add.sprite(50, 400, 'player');
     this.player.setBounce(0.0);
     this.physics.world.bounds.width = map.widthInPixels;
-    // this.physics.world.bounds.height = map.heightInPixels;
-    this.physics.world.bounds.height = 100000;
+    this.physics.world.bounds.height = map.heightInPixels + 9000;
     this.player.setCollideWorldBounds(true);
 
     this.player.body.setSize(this.player.width - 40, this.player.height - 20);
@@ -192,7 +191,7 @@ class Level3Scene extends Phaser.Scene {
 
     bombs = this.physics.add.group();
     this.time.addEvent({
-      delay: 2000,
+      delay: 750,
       callback: () => {
         const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         const bomb = bombs.create(x, 16, 'bomb');
@@ -202,7 +201,7 @@ class Level3Scene extends Phaser.Scene {
         });
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
-        bomb.setVelocity(Phaser.Math.Between(0, 500), 20);
+        bomb.setVelocity(Phaser.Math.Between(0, 1000), 12);
         bomb.allowGravity = true;
       },
       callbackScope: this,

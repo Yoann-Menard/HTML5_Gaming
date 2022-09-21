@@ -65,8 +65,7 @@ class Level2Scene extends Phaser.Scene {
     this.player = this.physics.add.sprite(100, 470, 'player');
     this.player.setBounce(0.0);
     this.physics.world.bounds.width = map.widthInPixels;
-    // this.physics.world.bounds.height = map.heightInPixels;
-    this.physics.world.bounds.height = 100000;
+    this.physics.world.bounds.height = map.heightInPixels + 9000;
     this.player.setCollideWorldBounds(true);
 
     this.player.body.setSize(this.player.width - 40, this.player.height - 20);
@@ -210,7 +209,7 @@ class Level2Scene extends Phaser.Scene {
 
     bombs = this.physics.add.group();
     this.time.addEvent({
-      delay: 2000,
+      delay: 1000,
       callback: () => {
         const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         const bomb = bombs.create(x, 16, 'bomb');
@@ -220,7 +219,7 @@ class Level2Scene extends Phaser.Scene {
         });
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
-        bomb.setVelocity(Phaser.Math.Between(0, 500), 20);
+        bomb.setVelocity(Phaser.Math.Between(0, 400), 20);
         bomb.allowGravity = true;
       },
       callbackScope: this,

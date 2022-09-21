@@ -72,8 +72,7 @@ class Level1Scene extends Phaser.Scene {
     this.player = this.physics.add.sprite(50, 400, 'player');
     this.player.setBounce(0.0);
     this.physics.world.bounds.width = map.widthInPixels;
-    // this.physics.world.bounds.height = map.heightInPixels;
-    this.physics.world.bounds.height = 100000;
+    this.physics.world.bounds.height = map.heightInPixels + 9000;
     this.player.setCollideWorldBounds(true);
 
     this.player.body.setSize(this.player.width - 40, this.player.height - 20);
