@@ -73,6 +73,7 @@ class Level1Scene extends Phaser.Scene {
     this.player.setBounce(0.0);
     this.physics.world.bounds.width = map.widthInPixels;
     // this.physics.world.bounds.height = map.heightInPixels;
+    this.physics.world.bounds.height = 100000;
     this.player.setCollideWorldBounds(true);
 
     this.player.body.setSize(this.player.width - 40, this.player.height - 20);
@@ -249,7 +250,7 @@ class Level1Scene extends Phaser.Scene {
     });
 
     if (!this.scale.isFullscreen) {
-      this.add.text(10, 300, 'PRESS F TO PLAY THE GAME IN FULLSCREEN MODE (REQUIRED FOR THE GAME PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
+      this.add.text(10, 100, 'PRESS F TO PLAY THE GAME IN FULLSCREEN MODE', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
     }
 
     if (this.cursors.left.isDown) {
