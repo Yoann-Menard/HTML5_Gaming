@@ -142,7 +142,7 @@ class Level1Scene extends Phaser.Scene {
       const spikeSprite = this.spikes.create(spike.x, spike.y + 200 - spike.height, 'spike').setOrigin(0);
       spikeSprite.body.setSize(spike.width, spike.height - 20).setOffset(0, 20);
     });
-    this.physics.add.collider(this.player, this.spikes, playerHit, null, this);
+    this.physics.add.collider(this.player, this.spikes, playerHit1, null, this);
 
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.cameras.main.startFollow(this.player);
@@ -209,8 +209,8 @@ class Level1Scene extends Phaser.Scene {
       loop: true
     });
 
-    this.physics.add.collider(this.player, bombs, playerHit, null, this);
-    this.physics.add.collider(bombs, this.spikes, bombHit, null, this);
+    this.physics.add.collider(this.player, bombs, playerHit1, null, this);
+    this.physics.add.collider(bombs, this.spikes, bombHit1, null, this);
     this.physics.add.collider(bombs, platforms, () => {
       this.sound.play('boing', {
         volume: 2,
@@ -236,6 +236,7 @@ class Level1Scene extends Phaser.Scene {
 
     if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.U).isDown) {
       this.sound.stopAll();
+      this.scene.stop();
       this.scene.start("Level2Scene");
     }
 
@@ -317,7 +318,7 @@ function useJumpBoost(player) {
   scoreText.setText('Score: ' + score);
 }
 
-function playerHit(player) {
+function playerHit1(player) {
   this.death.play();
   player.play('fall', true);
   deathCounter++
@@ -325,7 +326,7 @@ function playerHit(player) {
   player.setVelocity(0, 0);
   player.setTint(0xff0000);
   player.setX(50);
-  player.setY(300);
+  player.setY(400);
   player.setAlpha(0);
   let tw = this.tweens.add({
     targets: player,
@@ -362,7 +363,7 @@ function playerHit(player) {
   }
 }
 
-function bombHit(bombs) {
+function bombHit1(bombs) {
   bombs.destroy();
   this.sound.play('pop', {
     volume: 2,

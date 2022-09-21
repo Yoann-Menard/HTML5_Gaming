@@ -4,13 +4,6 @@ class Level2Scene extends Phaser.Scene {
   }
 
   preload() {
-    // this.load.image('background', 'assets/background2.png');
-    // this.load.image('background', 'assets/background1.gif');
-    //     // this.load.image('background', 'assets/background3.png');
-    //     // this.load.image('background', 'assets/background4.png');
-    //     // this.load.image('background', 'assets/background5.png');
-    //     // this.load.image('background', 'assets/background6.jpg');
-
     this.load.image('hospitalBackground', 'assets/hospitalbg.png');
     this.load.image('tiles', 'assets/tilesets/platformPack_tilesheet.png');
     this.load.image('spike', 'assets/spike.png');
@@ -47,7 +40,7 @@ class Level2Scene extends Phaser.Scene {
 
   create() {
     this.music = this.sound.add('world-2', {
-      volume: 1.5,
+      volume: 0.85,
       loop: true
     })
 
@@ -69,7 +62,7 @@ class Level2Scene extends Phaser.Scene {
     platforms.setCollisionByExclusion(-1, true);
     platforms.setCollisionByProperty({ collides: true });
 
-    this.player = this.physics.add.sprite(50, 400, 'player');
+    this.player = this.physics.add.sprite(100, 470, 'player');
     this.player.setBounce(0.0);
     this.physics.world.bounds.width = map.widthInPixels;
     // this.physics.world.bounds.height = map.heightInPixels;
@@ -94,7 +87,7 @@ class Level2Scene extends Phaser.Scene {
       loop: false
     });
 
-    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#0f0' });
     scoreText.setScrollFactor(0);
 
 
@@ -142,15 +135,15 @@ class Level2Scene extends Phaser.Scene {
       const spikeSprite = this.spikes.create(spike.x, spike.y + 200 - spike.height, 'spike').setOrigin(0);
       spikeSprite.body.setSize(spike.width, spike.height - 20).setOffset(0, 20);
     });
-    this.physics.add.collider(this.player, this.spikes, playerHit, null, this);
+    this.physics.add.collider(this.player, this.spikes, playerHit2, null, this);
 
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.cameras.main.startFollow(this.player);
 
     stars = this.physics.add.group({
       key: 'coin',
-      repeat: 6,
-      setXY: { x: 620, y: 500, stepX: 90 }
+      repeat: 0,
+      setXY: { x: 620, y: 500, stepX: 0 }
     });
 
     stars.children.iterate(function (child) {
@@ -197,7 +190,7 @@ class Level2Scene extends Phaser.Scene {
         const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
         const bomb = bombs.create(x, 16, 'bomb');
         this.sound.play('spawn', {
-          volume: 0.5,
+          volume: 3.5,
           loop: false,
         });
         bomb.setBounce(1);
@@ -209,8 +202,8 @@ class Level2Scene extends Phaser.Scene {
       loop: true
     });
 
-    this.physics.add.collider(this.player, bombs, playerHit, null, this);
-    this.physics.add.collider(bombs, this.spikes, bombHit, null, this);
+    this.physics.add.collider(this.player, bombs, playerHit2, null, this);
+    this.physics.add.collider(bombs, this.spikes, bombHit2, null, this);
     this.physics.add.collider(bombs, platforms, () => {
       this.sound.play('boing', {
         volume: 2,
@@ -234,6 +227,12 @@ class Level2Scene extends Phaser.Scene {
       this.scene.restart();
     }
 
+    if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.U).isDown) {
+      this.sound.stopAll();
+      this.scene.stop();
+      this.scene.start("Level3Scene");
+
+    }
     bombs.children.iterate((bomb) => {
       if (bomb.body.velocity.x > 0) {
         bomb.setFlipX(true);
@@ -241,10 +240,6 @@ class Level2Scene extends Phaser.Scene {
         bomb.setFlipX(false);
       }
     });
-
-    // if (!this.scale.isFullscreen) {
-    //   this.add.text(10, 300, 'PRESS F TO PLAY THE GAME IN FULLSCREEN MODE (REQUIRED FOR THE GAME PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
-    // }
 
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-200);
@@ -312,15 +307,15 @@ function useJumpBoost(player) {
   scoreText.setText('Score: ' + score);
 }
 
-function playerHit(player) {
+function playerHit2(player) {
   this.death.play();
   player.play('fall', true);
   deathCounter++
   scoreText.setText('Deaths: ' + deathCounter);
   player.setVelocity(0, 0);
   player.setTint(0xff0000);
-  player.setX(50);
-  player.setY(300);
+  player.setX(100);
+  player.setY(470);
   player.setAlpha(0);
   let tw = this.tweens.add({
     targets: player,
@@ -337,27 +332,26 @@ function playerHit(player) {
     this.player.clearTint();
   }, 1000);
 
-  if (deathCounter >= 5) {
+  if (deathCounter >= 15) {
     this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(0, 0);
-    this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#00fff' });
-    this.add.text(800, 500, 'Press R to Restart', { fontSize: '32px', fill: '#00fff' });
+    this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#ffff' });
+    this.add.text(800, 500, 'Press R to Restart', { fontSize: '32px', fill: '#fff' });
     this.music.stop();
     this.game_over.play();
     this.jump.mute = true;
     this.time.removeAllEvents();
     this.physics.pause();
     this.input.keyboard.on('keydown-R', () => {
-      this.scene.restart();
-      this.game_over.stop();
-      this.jump.mute = false;
-      deathCounter = 0;
+      this.sound.stopAll();
+      this.scene.start('Level1Scene');
       score = 0;
+      deathCounter = 0;
     }
     );
   }
 }
 
-function bombHit(bombs) {
+function bombHit2(bombs) {
   bombs.destroy();
   this.sound.play('pop', {
     volume: 2,
@@ -377,6 +371,7 @@ function bombHit(bombs) {
 
 function startLevel3() {
   this.sound.stopAll();
+  this.scene.stop();
   this.scene.start('Level3Scene');
 }
 
@@ -449,7 +444,7 @@ function collectStar(player, star) {
     var bomb = bombs.create(x, 50, 'bomb');
     this.sound.play('spawn',
       {
-        volume: 0.5,
+        volume: 3.5,
         loop: false,
       });
     bomb.setBounce(1);
