@@ -353,11 +353,12 @@ function playerHit1(player) {
     this.time.removeAllEvents();
     this.physics.pause();
     this.input.keyboard.on('keydown-R', () => {
-      this.scene.restart();
+      this.scene.stop();
       this.game_over.stop();
       this.jump.mute = false;
-      deathCounter = 0;
       score = 0;
+      deathCounter = 0;
+      this.scene.start("Level1Scene");
     }
     );
   }

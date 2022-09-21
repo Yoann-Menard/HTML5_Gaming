@@ -46,7 +46,7 @@ class Level3Scene extends Phaser.Scene {
 
   create() {
     this.music = this.sound.add('world-3', {
-      volume: 0.85,
+      volume: 1,
       loop: true
     })
 
@@ -148,8 +148,8 @@ class Level3Scene extends Phaser.Scene {
 
     stars = this.physics.add.group({
       key: 'coin',
-      repeat: 6,
-      setXY: { x: 620, y: 500, stepX: 90 }
+      repeat: 9,
+      setXY: { x: 160, y: 790, stepX: 90 }
     });
 
     stars.children.iterate(function (child) {
@@ -191,17 +191,17 @@ class Level3Scene extends Phaser.Scene {
 
     bombs = this.physics.add.group();
     this.time.addEvent({
-      delay: 750,
+      delay: 1,
       callback: () => {
-        const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+        const x = (this.player.x < 400) ? Phaser.Math.Between(5000, 9000) : Phaser.Math.Between(1000, 5300);
         const bomb = bombs.create(x, 16, 'bomb');
         this.sound.play('spawn', {
-          volume: 3.5,
+          volume: 3,
           loop: false,
         });
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
-        bomb.setVelocity(Phaser.Math.Between(0, 1000), 12);
+        bomb.setVelocity(Phaser.Math.Between(0, 1000), -12);
         bomb.allowGravity = true;
       },
       callbackScope: this,
@@ -212,7 +212,7 @@ class Level3Scene extends Phaser.Scene {
     this.physics.add.collider(bombs, this.spikes, bombHit3, null, this);
     this.physics.add.collider(bombs, platforms, () => {
       this.sound.play('boing', {
-        volume: 2,
+        volume: 0.8,
         loop: false
       });
     }
@@ -342,7 +342,7 @@ function playerHit3(player) {
     this.player.clearTint();
   }, 1000);
 
-  if (deathCounter >= 5) {
+  if (deathCounter >= 15) {
     this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(0, 0);
     this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#fff' });
     this.add.text(800, 500, 'Press R to Restart', { fontSize: '32px', fill: '#fff' });

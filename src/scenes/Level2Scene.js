@@ -211,7 +211,7 @@ class Level2Scene extends Phaser.Scene {
     this.time.addEvent({
       delay: 1000,
       callback: () => {
-        const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+        const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(600, 800);
         const bomb = bombs.create(x, 16, 'bomb');
         this.sound.play('spawn', {
           volume: 3.5,
