@@ -194,7 +194,7 @@ class Level3Scene extends Phaser.Scene {
 
     bombs = this.physics.add.group();
     this.time.addEvent({
-      delay: 1000,
+      delay: 1,
       callback: () => {
         const x = (this.player.x < 400) ? Phaser.Math.Between(5000, 9000) : Phaser.Math.Between(1000, 5300);
         const bomb = bombs.create(x, 16, 'bomb');
