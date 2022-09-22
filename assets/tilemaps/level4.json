@@ -1,4 +1,12 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"level3.json"
+        }
+    },
  "height":7,
  "infinite":false,
  "layers":[
@@ -13,29 +21,6 @@
          "type":"tilelayer",
          "visible":true,
          "width":14,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":8,
-         "name":"Exit",
-         "objects":[
-                {
-                 "class":"",
-                 "gid":11,
-                 "height":64,
-                 "id":12,
-                 "name":"",
-                 "rotation":0,
-                 "visible":true,
-                 "width":64,
-                 "x":770.640264026403,
-                 "y":260.382838283828
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -108,7 +93,7 @@
         {
          "columns":14,
          "firstgid":1,
-         "image":"..\/..\/stackabuse-platformer\/assets\/tilesets\/platformPack_tilesheet.png",
+         "image":"..\/tilesets\/platformPack_tilesheet.png",
          "imageheight":448,
          "imagewidth":896,
          "margin":0,

@@ -1,4 +1,12 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"level2.json"
+        }
+    },
  "height":7,
  "infinite":false,
  "layers":[
@@ -186,6 +194,19 @@
          "imagewidth":896,
          "margin":0,
          "name":"level2",
+         "spacing":0,
+         "tilecount":98,
+         "tileheight":64,
+         "tilewidth":64
+        }, 
+        {
+         "columns":14,
+         "firstgid":99,
+         "image":"..\/tilesets\/platformPack_tilesheet.png",
+         "imageheight":448,
+         "imagewidth":896,
+         "margin":0,
+         "name":"level3",
          "spacing":0,
          "tilecount":98,
          "tileheight":64,

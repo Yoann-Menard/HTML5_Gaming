@@ -61,14 +61,14 @@ class Level3Scene extends Phaser.Scene {
     const map = this.make.tilemap({ key: 'level3' });
     const tileset = map.addTilesetImage('level3', 'tiles');
 
-    // const backgroundImage = this.add.image(0, 0, 'background6').setOrigin(0, 0);
+    const backgroundImage = this.add.image(0, 0, 'background6').setOrigin(0, 0);
     // backgroundImage.setScale(map.widthInPixels / backgroundImage.width, map.heightInPixels / backgroundImage.height);
 
     const platforms = map.createLayer('Platforms', tileset, 0, 200);
     platforms.setCollisionByExclusion(-1, true);
     platforms.setCollisionByProperty({ collides: true });
 
-    this.player = this.physics.add.sprite(50, 400, 'player');
+    this.player = this.physics.add.sprite(140, 770, 'player');
     this.player.setBounce(0.0);
     this.physics.world.bounds.width = map.widthInPixels;
     this.physics.world.bounds.height = map.heightInPixels + 9000;
@@ -92,8 +92,7 @@ class Level3Scene extends Phaser.Scene {
       volume: 2,
       loop: false
     });
-
-    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#f00' });
     scoreText.setScrollFactor(0);
 
 
@@ -157,7 +156,11 @@ class Level3Scene extends Phaser.Scene {
       child.body.allowGravity = false;
     });
 
-    exitLayer = this.physics.add.sprite(3000, 380, 'exit');
+    exitLayer = this.physics.add.sprite(2850, 380, 'exit');
+    jumpBoost = this.physics.add.sprite(1900, 3000, 'jumpBoost');
+    this.physics.add.collider(jumpBoost, platforms);
+    this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
+
 
     this.time.addEvent({
       delay: 25000,
@@ -167,7 +170,7 @@ class Level3Scene extends Phaser.Scene {
             volume: 3,
             loop: false
           });
-        jumpBoost = this.physics.add.sprite(600, 780, 'jumpBoost');
+        jumpBoost = this.physics.add.sprite(1900, 3000, 'jumpBoost');
         this.physics.add.collider(jumpBoost, platforms);
         this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
       },
@@ -191,7 +194,7 @@ class Level3Scene extends Phaser.Scene {
 
     bombs = this.physics.add.group();
     this.time.addEvent({
-      delay: 1,
+      delay: 1000,
       callback: () => {
         const x = (this.player.x < 400) ? Phaser.Math.Between(5000, 9000) : Phaser.Math.Between(1000, 5300);
         const bomb = bombs.create(x, 16, 'bomb');
@@ -291,6 +294,10 @@ class Level3Scene extends Phaser.Scene {
       this.player.setBounce(0.0);
     }
 
+    if (this.player.body.velocity.y > 900) {
+      this.player.setVelocityY(800);
+    }
+
     if (this.player.body.velocity.x > 0) {
       this.player.setFlipX(false);
     } else if (this.player.body.velocity.x < 0) {
@@ -324,8 +331,8 @@ function playerHit3(player) {
   scoreText.setText('Deaths: ' + deathCounter);
   player.setVelocity(0, 0);
   player.setTint(0xff0000);
-  player.setX(50);
-  player.setY(400);
+  player.setX(100);
+  player.setY(100);
   player.setAlpha(0);
   let tw = this.tweens.add({
     targets: player,
