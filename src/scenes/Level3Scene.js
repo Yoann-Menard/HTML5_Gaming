@@ -331,8 +331,8 @@ function playerHit3(player) {
   scoreText.setText('Deaths: ' + deathCounter);
   player.setVelocity(0, 0);
   player.setTint(0xff0000);
-  player.setX(100);
-  player.setY(100);
+  player.setX(140);
+  player.setY(770);
   player.setAlpha(0);
   let tw = this.tweens.add({
     targets: player,
@@ -349,7 +349,7 @@ function playerHit3(player) {
     this.player.clearTint();
   }, 1000);
 
-  if (deathCounter >= 15) {
+  if (deathCounter >= 35) {
     this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(0, 0);
     this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#fff' });
     this.add.text(800, 500, 'Press R to Restart', { fontSize: '32px', fill: '#fff' });

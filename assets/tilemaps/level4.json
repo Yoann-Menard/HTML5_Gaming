@@ -1,20 +1,39 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "format":"json",
-         "target":"level3.json"
-        }
-    },
- "height":7,
+ "height":30,
  "infinite":false,
  "layers":[
         {
-         "compression":"",
-         "data":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAQAAAAEAAAABAAAAAQAAAAAAAAAAAAAAAQAAAAEAAAABAAAAAAAAAAAAAAABAAAAAQAAAAQAAAAEAAAABAAAAAQAAAAEAAAAAAAAAAAAAAAEAAAABAAAAAQAAAAAAAAAAAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAAAAAAAAAAAAQAAAAEAAAABAAAAAAAAAAAAAAABAAAAAQAAAA=",
-         "encoding":"base64",
-         "height":7,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 59, 59, 59, 59, 59, 59, 59, 59, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            61, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61,
+            61, 61, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61, 61,
+            61, 61, 61, 0, 0, 0, 0, 0, 0, 0, 0, 61, 61, 61,
+            61, 61, 61, 61, 0, 0, 0, 0, 0, 0, 61, 61, 61, 61,
+            61, 61, 61, 61, 61, 0, 0, 0, 0, 61, 61, 61, 61, 61,
+            61, 61, 61, 61, 61, 61, 0, 0, 61, 61, 61, 61, 61, 61,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 61, 61, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 61, 61, 61, 61, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 61, 61, 61, 61, 61, 61, 0, 0, 0, 0,
+            0, 0, 0, 61, 61, 61, 61, 61, 61, 61, 61, 0, 0, 0,
+            0, 0, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 0, 0,
+            0, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 0,
+            61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61,
+            61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61,
+            61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61],
+         "height":30,
          "id":1,
          "name":"Platforms",
          "opacity":1,
@@ -26,7 +45,7 @@
         }, 
         {
          "draworder":"topdown",
-         "id":3,
+         "id":2,
          "name":"Spikes",
          "objects":[
                 {
@@ -38,44 +57,8 @@
                  "rotation":0,
                  "visible":true,
                  "width":64,
-                 "x":639.895668374476,
-                 "y":447.657196087564
-                }, 
-                {
-                 "class":"",
-                 "gid":71,
-                 "height":64,
-                 "id":7,
-                 "name":"",
-                 "rotation":0,
-                 "visible":true,
-                 "width":64,
-                 "x":706.667908709828,
-                 "y":448.491849091756
-                }, 
-                {
-                 "class":"",
-                 "gid":71,
-                 "height":64,
-                 "id":8,
-                 "name":"",
-                 "rotation":0,
-                 "visible":true,
-                 "width":64,
-                 "x":318.554261760596,
-                 "y":447.657196087564
-                }, 
-                {
-                 "class":"",
-                 "gid":71,
-                 "height":64,
-                 "id":9,
-                 "name":"",
-                 "rotation":0,
-                 "visible":true,
-                 "width":64,
-                 "x":385.326502095948,
-                 "y":447.657196087564
+                 "x":448.482834300047,
+                 "y":639.46198463709
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -83,8 +66,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":14,
+ "nextlayerid":3,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.1",
@@ -97,7 +80,7 @@
          "imageheight":448,
          "imagewidth":896,
          "margin":0,
-         "name":"yoann_platformer",
+         "name":"platformPack_tilesheet",
          "spacing":0,
          "tilecount":98,
          "tileheight":64,
