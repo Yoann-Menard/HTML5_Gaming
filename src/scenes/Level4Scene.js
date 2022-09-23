@@ -92,7 +92,7 @@ class Level4Scene extends Phaser.Scene {
       volume: 2,
       loop: false
     });
-    scoreText = this.add.text(16, 16, 'Great Calamity Paco', { fontSize: '32px', fill: '#f00' });
+    scoreText = this.add.text(16, 16, 'Great Basilisk Paco', { fontSize: '32px', fill: '#f00' });
     scoreText.setScrollFactor(0);
 
 
@@ -180,6 +180,7 @@ class Level4Scene extends Phaser.Scene {
     this.enemy.body.setSize(this.enemy.width - 90, this.enemy.height - 90);
     this.physics.add.collider(this.player, this.enemy, playerHit4, null, this);
     this.physics.add.collider(this.enemy, this.spikes, enemyHit, null, this);
+    this.physics.add.collider(this.enemy, platforms);
   }
 
   update() {
@@ -261,17 +262,17 @@ class Level4Scene extends Phaser.Scene {
     }
 
     if (this.enemy.x < this.player.x) {
-      this.enemy.setVelocityX(50);
+      this.enemy.setVelocityX(150);
     }
 
     if (this.enemy.x > this.player.x) {
-      this.enemy.setVelocityX(-50);
+      this.enemy.setVelocityX(-150);
     }
     if (this.enemy.y < this.player.y) {
-      this.enemy.setVelocityY(50);
+      this.enemy.setVelocityY(150);
     }
     if (this.enemy.y > this.player.y) {
-      this.enemy.setVelocityY(50);
+      this.enemy.setVelocityY(-150);
     }
 
     if (this.enemy.body.velocity.x > 0) {
@@ -329,7 +330,7 @@ function playerHit4(player) {
   }, 1000);
 
   if (deathCounter >= 35) {
-    this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(0, 500);
+    this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(1300, 1500);
     this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#fff' });
     this.add.text(800, 500, 'Press R to Restart', { fontSize: '32px', fill: '#fff' });
     this.music.stop();
@@ -369,8 +370,8 @@ function enemyHit(enemy) {
   }, 1950);
 
   if (enemyDeathCounter >= 3) {
-    this.add.rectangle(0, 0, 2920, 1080, 0x000000).setOrigin(0, 0);
-    this.add.text(800, 400, 'You defeated Great Calamity Paco CONGRATULATIONS', { fontSize: '32px', fill: '#fff' });
+    this.add.rectangle(0, 0, 2920, 1080, 0x000000).setOrigin(mapWidth, mapHeight);
+    this.add.text(800, 400, 'You defeated Great Basilisk Paco CONGRATULATIONS', { fontSize: '32px', fill: '#00fff' });
     this.music.stop();
     this.game_over.play();
     this.jump.mute = true;
