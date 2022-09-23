@@ -4,13 +4,6 @@ class Level4Scene extends Phaser.Scene {
   }
 
   preload() {
-    // this.load.image('background', 'assets/background1.gif');
-    // this.load.image('background6', 'assets/background6.jpg');
-    // this.load.image('background', 'assets/background3.png');
-    // this.load.image('background', 'assets/background4.png');
-    // this.load.image('background', 'assets/background5.png');
-    // this.load.image('background', 'assets/background6.jpg');
-
     this.load.image('tiles', 'assets/tilesets/platformPack_tilesheet.png');
     this.load.image('spike', 'assets/spike.png');
     this.load.image('enemy', 'assets/enemy.png');
@@ -37,6 +30,7 @@ class Level4Scene extends Phaser.Scene {
     this.load.audio("pop", ["assets/sounds/pop.mp3"]);
     this.load.audio("jump_spawn", ["assets/sounds/jump_spawn.mp3"]);
     this.load.audio("powerup", ["assets/sounds/powerup.mp3"]);
+    this.load.audio("win", ["assets/sounds/win.mp3"]);
   }
 
 
@@ -65,7 +59,7 @@ class Level4Scene extends Phaser.Scene {
     platforms.setCollisionByExclusion(-1, true);
     platforms.setCollisionByProperty({ collides: true });
 
-    this.player = this.physics.add.sprite(0, 1850, 'player');
+    this.player = this.physics.add.sprite(0, 1750, 'player');
     this.player.setBounce(0.0);
     this.physics.world.bounds.width = map.widthInPixels;
     this.physics.world.bounds.height = 9999999;
@@ -89,6 +83,10 @@ class Level4Scene extends Phaser.Scene {
       loop: false
     });
     this.game_over = this.sound.add("game_over", {
+      volume: 2,
+      loop: false
+    });
+    this.win = this.sound.add("win", {
       volume: 2,
       loop: false
     });
@@ -175,7 +173,7 @@ class Level4Scene extends Phaser.Scene {
     this.physics.add.collider(jumpBoost, platforms);
     this.physics.add.overlap(this.player, jumpBoost, collectJumpBoost, null, this);
 
-    this.enemy = this.physics.add.sprite(0, 0, 'enemy');
+    this.enemy = this.physics.add.sprite(70, 600, 'enemy');
     this.enemy.setCollideWorldBounds(true);
     this.enemy.body.setSize(this.enemy.width - 90, this.enemy.height - 90);
     this.physics.add.collider(this.player, this.enemy, playerHit4, null, this);
@@ -203,10 +201,6 @@ class Level4Scene extends Phaser.Scene {
       this.scene.start("Level1Scene");
     }
 
-    if (!this.scale.isFullscreen) {
-      this.add.text(10, 300, 'PRESS F TO PLAY THE GAME IN FULLSCREEN MODE (REQUIRED FOR THE GAME PHYSICS TO WORK PROPERLY !!!!!)', { fontSize: '32px', fill: '#f00' }).setScrollFactor(0);
-    }
-
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-200);
       if (this.player.body.onFloor()) {
@@ -226,21 +220,18 @@ class Level4Scene extends Phaser.Scene {
 
     if ((this.cursors.space.isDown || this.cursors.up.isDown) && this.player.body.onFloor()) {
       this.jump.play();
-      this.player.setVelocityY(-350);
+      this.player.setVelocityY(-950);
       this.player.play('jump', true);
     }
 
     if (this.cursors.shift.isDown) {
-      this.player.setVelocityX(this.player.body.velocity.x * 2.1);
+      this.player.setVelocityX(this.player.body.velocity.x * 4.1);
     }
 
     if (this.cursors.down.isDown && !this.player.body.onFloor()) {
       this.player.play('fall', true);
-      this.player.setVelocityY(this.player.body.velocity.y + 60);
-      this.player.setBounce(0.5);
-      if (this.player.body.velocity.y > 900) {
-        this.player.setVelocityY(800);
-      }
+      this.player.setVelocityY(this.player.body.velocity.y + 600);
+      this.player.setBounce(0);
     }
 
     if (this.player.body.onFloor()) {
@@ -257,22 +248,18 @@ class Level4Scene extends Phaser.Scene {
       this.player.setFlipX(true);
     }
 
-    if (this.enemy.active === false) {
-      this.start.scene.start("Level1Scene");
-    }
-
     if (this.enemy.x < this.player.x) {
-      this.enemy.setVelocityX(150);
+      this.enemy.setVelocityX(200);
     }
 
     if (this.enemy.x > this.player.x) {
-      this.enemy.setVelocityX(-150);
+      this.enemy.setVelocityX(-200);
     }
     if (this.enemy.y < this.player.y) {
-      this.enemy.setVelocityY(150);
+      this.enemy.setVelocityY(100);
     }
     if (this.enemy.y > this.player.y) {
-      this.enemy.setVelocityY(-150);
+      this.enemy.setVelocityY(-100);
     }
 
     if (this.enemy.body.velocity.x > 0) {
@@ -281,15 +268,12 @@ class Level4Scene extends Phaser.Scene {
     if (this.enemy.body.velocity.x < 0) {
       this.enemy.setFlipX(true);
     }
-
   }
-
 }
 
 var jumpBoost;;
 var score = 0;
 var scoreText;
-var enemy
 var deathCounter = 0;
 var enemyDeathCounter = 0;
 var jumpBoostCollected = false;
@@ -298,7 +282,7 @@ function useJumpBoost(player) {
   player.play('superjump', true);
   jumpBoostCollected = false;
   player.clearTint();
-  player.setVelocityY(-900);
+  player.setVelocityY(-1500);
   scoreText.setText('Score: ' + score);
 }
 
@@ -310,9 +294,9 @@ function playerHit4(player) {
   player.setVelocity(0, 0);
   player.setTint(0xff0000);
   player.setX(0);
-  player.setY(1850);
-  this.enemy.setX(0);
-  this.enemy.setY(0);
+  player.setY(1550);
+  this.enemy.setX(70);
+  this.enemy.setY(600);
   player.setAlpha(0);
   let tw = this.tweens.add({
     targets: player,
@@ -329,7 +313,7 @@ function playerHit4(player) {
     this.player.clearTint();
   }, 1000);
 
-  if (deathCounter >= 35) {
+  if (deathCounter >= 15) {
     this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(1300, 1500);
     this.add.text(800, 400, 'Game Over', { fontSize: '32px', fill: '#fff' });
     this.add.text(800, 500, 'Press R to Restart', { fontSize: '32px', fill: '#fff' });
@@ -370,10 +354,8 @@ function enemyHit(enemy) {
   }, 1950);
 
   if (enemyDeathCounter >= 3) {
-    this.add.rectangle(0, 0, 2920, 1080, 0x000000).setOrigin(mapWidth, mapHeight);
-    this.add.text(800, 400, 'You defeated Great Basilisk Paco CONGRATULATIONS', { fontSize: '32px', fill: '#00fff' });
     this.music.stop();
-    this.game_over.play();
+    this.win.play();
     this.jump.mute = true;
     this.time.removeAllEvents();
     this.physics.pause();
